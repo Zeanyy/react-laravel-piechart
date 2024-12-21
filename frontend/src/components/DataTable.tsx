@@ -58,7 +58,8 @@ function DataTable({ data, handleRefresh }: IChannelList) {
             })
             if (!response.ok) {
                 const errorData = await response.json()
-                throw errorData.errors ? Object.values(errorData.errors).flat() : [];
+                const errorMessages =  errorData.errors ? Object.values(errorData.errors).flat() : [];
+                setErrors(errorMessages as string[])
             } else {
                 setErrors([])
                 setNewChannel({
@@ -68,11 +69,10 @@ function DataTable({ data, handleRefresh }: IChannelList) {
             }
         }
         catch (error: any) {
-            setErrors(error)
-            console.log(error)
+            setErrors(["Prosze spróbować później."])
         }
         finally {
-            handleRefresh()
+            handleRefresh();
         }
     }
 
@@ -91,7 +91,7 @@ function DataTable({ data, handleRefresh }: IChannelList) {
         })
     }
 
-    const handleOnKeyDown = async (e: any) => {
+    const handleEdit = async (e: any) => {
         if (e.key !== 'Enter') { return }
 
         try {
@@ -101,11 +101,12 @@ function DataTable({ data, handleRefresh }: IChannelList) {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                 },
-                body: JSON.stringify({quantity: edit.value})
+                body: JSON.stringify({ quantity: edit.value })
             })
             if (!response.ok) {
                 const errorData = await response.json()
-                throw errorData.errors ? Object.values(errorData.errors).flat() : [];
+                const errorMessages =  errorData.errors ? Object.values(errorData.errors).flat() : [];
+                setErrors(errorMessages as string[])
             } else {
                 setErrors([])
                 setEdit({
@@ -116,8 +117,7 @@ function DataTable({ data, handleRefresh }: IChannelList) {
             }
         }
         catch (error: any) {
-            setErrors(error)
-            console.log(error)
+            setErrors(["Prosze spróbować później."])
         }
         finally {
             handleRefresh()
@@ -126,66 +126,62 @@ function DataTable({ data, handleRefresh }: IChannelList) {
 
     return (
         <>
-            {data?.length <= 0 ? (
-                <h1>No data</h1>
-            ) : (
-                <div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Nazwa</th>
-                                <th>Ilość</th>
-                                <th>Akcje</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data?.map((channel) => (
-                                <tr key={channel.id as number}>
-                                    <td>{channel.name}</td>
-                                    <td onDoubleClick={(e) => { handleChangeElement(channel.id as number, channel.quantity as number) }}>
-                                        {(editing && channel.id === edit.key) ? (
-                                            <input type="number" value={edit.value} onChange={(e) => { handleOnChange(e) }} onKeyDown={(e) => { handleOnKeyDown(e) }} onMouseOut={() => {setEditing(false)}}/>
-                                        ) : (
-                                            <>{channel.quantity}</>
-                                        )}
-                                    </td>
-                                    <td>
-                                        <button onClick={() => handleDelete(channel.id as number)}>Usuń</button>
-                                    </td>
-                                </tr>
-                            ))}
-                            <tr>
-                                <td>
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        onChange={(e) => { setNewChannel({ ...newChannel, name: e.target.value }) }}
-                                        value={newChannel.name}
-                                        placeholder="Nazwa"
-                                    />
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nazwa</th>
+                            <th>Ilość</th>
+                            <th>Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {data?.map((channel) => (
+                            <tr key={channel.id as number}>
+                                <td>{channel.name}</td>
+                                <td onDoubleClick={(e) => { handleChangeElement(channel.id as number, channel.quantity as number) }}>
+                                    {(editing && channel.id === edit.key) ? (
+                                        <input type="number" value={edit.value} onChange={(e) => { handleOnChange(e) }} onKeyDown={(e) => { handleEdit(e) }} onMouseOut={() => { setEditing(false) }} />
+                                    ) : (
+                                        <>{channel.quantity}</>
+                                    )}
                                 </td>
                                 <td>
-                                    <input
-                                        type="number"
-                                        name="quantity"
-                                        onChange={(e) => { setNewChannel({ ...newChannel, quantity: Number(e.target.value) }) }}
-                                        value={newChannel.quantity}
-                                        placeholder="Ilość"
-                                    />
-                                </td>
-                                <td>
-                                    <button type="submit" onClick={handleCreate}>Dodaj</button>
+                                    <button onClick={() => handleDelete(channel.id as number)}>Usuń</button>
                                 </td>
                             </tr>
-                        </tbody>
-                    </table>
-                    <div>
-                        {errors?.map((error, index) => (
-                            <p key={index}>{error}</p>
                         ))}
-                    </div>
+                        <tr>
+                            <td>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    onChange={(e) => { setNewChannel({ ...newChannel, name: e.target.value }) }}
+                                    value={newChannel.name}
+                                    placeholder="Nazwa"
+                                />
+                            </td>
+                            <td>
+                                <input
+                                    type="number"
+                                    name="quantity"
+                                    onChange={(e) => { setNewChannel({ ...newChannel, quantity: Number(e.target.value) }) }}
+                                    value={newChannel.quantity}
+                                    placeholder="Ilość"
+                                />
+                            </td>
+                            <td>
+                                <button type="submit" onClick={handleCreate}>Dodaj</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div>
+                    {errors?.map((error, index) => (
+                        <p key={index}>{error}</p>
+                    ))}
                 </div>
-            )}
+            </div>
         </>
     )
 }

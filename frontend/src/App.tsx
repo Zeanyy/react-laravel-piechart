@@ -37,7 +37,7 @@ function App() {
 
   const handleRefresh = async () => {
     try {
-      fetchData()
+      await fetchData()
     }
     catch(error) {
       console.log(error)

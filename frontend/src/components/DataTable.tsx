@@ -126,7 +126,7 @@ function DataTable({ data, handleRefresh }: IChannelList) {
 
     return (
         <>
-            <div>
+            <div className="table-container">
                 <table>
                     <thead>
                         <tr>
@@ -147,7 +147,7 @@ function DataTable({ data, handleRefresh }: IChannelList) {
                                     )}
                                 </td>
                                 <td>
-                                    <button onClick={() => handleDelete(channel.id as number)}>Usuń</button>
+                                    <button className="button-remove" onClick={() => handleDelete(channel.id as number)}>Usuń</button>
                                 </td>
                             </tr>
                         ))}
@@ -171,7 +171,7 @@ function DataTable({ data, handleRefresh }: IChannelList) {
                                 />
                             </td>
                             <td>
-                                <button type="submit" onClick={handleCreate}>Dodaj</button>
+                                <button type="submit" className="button-add" onClick={handleCreate}>Dodaj</button>
                             </td>
                         </tr>
                     </tbody>

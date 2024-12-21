@@ -14,9 +14,9 @@ function App() {
   const [loading, setLoading] = useState(false)
 
   const fetchData = async () => {
-      const response = await fetch("http://localhost:8000/api/channels")
-      const data = await response.json()
-      setChannelList(data)
+    const response = await fetch("http://localhost:8000/api/channels")
+    const data = await response.json()
+    setChannelList(data)
   }
 
   useEffect(() => {
@@ -25,7 +25,7 @@ function App() {
         setLoading(true)
         await fetchData()
       }
-      catch(error) {
+      catch (error) {
         console.log(error)
       }
       finally {
@@ -39,7 +39,7 @@ function App() {
     try {
       await fetchData()
     }
-    catch(error) {
+    catch (error) {
       console.log(error)
     }
   }
@@ -47,7 +47,9 @@ function App() {
   return (
     <div className="App">
       {loading ? (
-        <h1>Ładowanie...</h1>
+        <div className="loading-container">
+          <h1>Ładowanie...</h1>
+        </div>
       ) : (
         <>
           <DataTable data={channelList} handleRefresh={handleRefresh} />

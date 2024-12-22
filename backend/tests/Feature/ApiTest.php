@@ -6,11 +6,11 @@ use App\Models\Channel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ExampleTest extends TestCase
+class ApiTest extends TestCase
 {
     use RefreshDatabase;
     
-    public function test_api_creates_channel(): void
+    public function test_store_creates_channel(): void
     {
         $response = $this->post('/api/add', ['name' => 'Google', 'quantity' => 100]);
 
@@ -20,7 +20,7 @@ class ExampleTest extends TestCase
         $this->assertDatabaseHas('channels', ['name' => 'Google', 'quantity' => 100]);
     }
 
-    public function test_api_reads_list_of_channels(): void
+    public function test_index_returns_list_of_channels(): void
     {
         Channel::insert([
             ['name' => 'Google', 'quantity' => 100],
@@ -43,7 +43,7 @@ class ExampleTest extends TestCase
         $this->assertDatabaseCount("channels", 2);
     }
 
-    public function test_api_updates_channel(): void
+    public function test_update_updates_channel(): void
     {
         $channel = Channel::create([
             'name' => 'Google',
@@ -57,7 +57,7 @@ class ExampleTest extends TestCase
         $this->assertDatabaseHas('channels', ['name' => 'Google', 'quantity' => 200]);
     }
 
-    public function test_api_deletes_channel(): void
+    public function test_destroy_deletes_channel(): void
     {
         $channel = Channel::create([
             'name' => 'Google',
@@ -71,7 +71,7 @@ class ExampleTest extends TestCase
         $this->assertDatabaseEmpty('channels');
     }
 
-    public function test_create_validation(): void 
+    public function test_store_validation(): void 
     {
         $provider = array_merge($this->invalidNamesProvider(), $this->invalidQuantityProvider());
 

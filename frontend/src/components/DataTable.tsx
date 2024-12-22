@@ -176,7 +176,7 @@ function DataTable({ data, handleRefresh }: IChannelList) {
                         </tr>
                     </tbody>
                 </table>
-                <div>
+                <div className="error-container">
                     {errors?.map((error, index) => (
                         <p key={index}>{error}</p>
                     ))}

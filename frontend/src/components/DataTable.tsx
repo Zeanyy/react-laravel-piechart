@@ -33,6 +33,7 @@ function DataTable({ data, handleRefresh }: IChannelList) {
     })
 
     const handleDelete = async (id: number) => {
+        if (!window.confirm("Czy chcesz usunąć ten element?")) return;
         try {
             await fetch(`http://localhost:8000/api/delete/${id}`, {
                 method: 'DELETE'
@@ -101,7 +102,7 @@ function DataTable({ data, handleRefresh }: IChannelList) {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                 },
-                body: JSON.stringify({ quantity: edit.value })
+                body: JSON.stringify({ quantity: Number(edit.value) })
             })
             if (!response.ok) {
                 const errorData = await response.json()

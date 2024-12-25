@@ -1,61 +1,68 @@
-.loading-container {
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #333;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+.App {
+  display: flex;
+  align-items: center;
+  height: 90vh;
+  padding: 0 5%;
+  gap: 5%;
+}
+
+.table-container,
+.chart-container {
+  width: 100%;
+  height: 80%;
+  background-color: #3b3b3b;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+}
+
+.table-container {
+  display: flex;
+  flex-direction: column;
+  overflow-x: auto;
+}
+
+.chart-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  color: #ffffff;
-  font-size: 24px;
-}
-
-.error-container {
-  text-align: center;
-  color: #E58383;
-}
-
-.table-container, .chart-container {
-  flex: 1;
-  margin: 20px;
-  background-color: #3b3b3b;
-  padding: 20px;
-  border-radius: 10px;
+  overflow-x: auto;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  background-color: #3b3b3b;
-  color: #ffffff;
+  margin-bottom: 20px;
 }
 
-table th, table td {
-  border: 1px solid #ffffff;
-  padding: 10px;
+thead th {
   text-align: left;
+  background-color: #444;
+  color: #fff;
+  padding: 10px;
+  border-bottom: 2px solid #555;
 }
 
-table th {
-  background-color: #4c4c4c;
-}
-
-input {
-  background-color: #3b3b3b;
-  color: #ffffff;
-  border: 1px solid #5c5c5c;
-  padding: 5px;
-  border-radius: 5px;
-  width: 97%;
+tbody td {
+  padding: 20px;
+  border-bottom: 1px solid #555;
 }
 
 button {
-  background-color: #5c5c5c;
-  color: #ffffff;
-  border: none;
   padding: 5px 10px;
-  cursor: pointer;
+  border: none;
+  color: #fff;
   border-radius: 5px;
-  display: block;
-  margin: auto;
-  width: 50%;
+  cursor: pointer;
 }
 
 button:hover {
@@ -76,4 +83,28 @@ button:hover {
 
 .button-add:hover {
   background-color: #8FC684;
+}
+
+input {
+  background-color: #444;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  margin: -5px;
+  border-radius: 3px;
+}
+
+.error-container {
+  text-align: center;
+  color: #E58383;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%; 
+  color: #ffffff;
+  font-size: 24px;
 }

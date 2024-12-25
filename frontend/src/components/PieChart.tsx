@@ -25,9 +25,27 @@ function PieChart({ data }: IPieChartData) {
                 color: "#ffffff",
                 fontSize: 14,
             },
+            pagingTextStyle: {
+                color: '#fff'
+            },
+            scrollArrows:{
+                activeColor: '#fff',
+                inactiveColor:'#1B1E23'
+            },
         },
         backgroundColor: "#3b3b3b",
-        colors: ["#27231E", "#3A5253", "#81B29A", "#FFF5F5", "#E07A5F"],
+        colors: [
+            "#1B1E23",
+            "#3A5253",
+            "#81B29A",
+            "#FFF5F5",
+            "#E07A5F",
+            "#FFC857",
+            "#4F6D7A",
+            "#A3B4A2",
+            "#D9CAB3",
+            "#AC3931",
+          ]
     };
 
     return (
@@ -35,7 +53,7 @@ function PieChart({ data }: IPieChartData) {
             <Chart
                 chartType="PieChart"
                 width="100%"
-                height="400px"
+                height="100%"
                 data={pieChartData}
                 options={options}
             />

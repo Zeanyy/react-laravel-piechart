@@ -1,37 +1,51 @@
 import { useState } from "react"
 
+/* Interfejs reprezentujący pojedyńczy element listy kanałów */
 interface IChannelItem {
     id?: number,
     name: string,
     quantity: number | string,
 }
 
+/* Interfejs reprezentujący przekazane parametry */
 interface IChannelList {
     data: IChannelItem[],
     handleRefresh: () => void,
 }
 
+/* Interfejs reprezentujący dane potrzebne do edycji */
 interface IEdit {
     key: number | undefined,
     value: number | undefined,
 }
 
+/**
+ * Komponent wyświetlający dane przekazane z API w formie tabeli
+ * Przyjmuje parametry w postaci listy kanałów oraz funkcji do odświerzania danych
+ */
 function DataTable({ data, handleRefresh }: IChannelList) {
-
+    /* Stan przechowujący dane kanału, który będzie dodany */
     const [newChannel, setNewChannel] = useState<IChannelItem>({
         name: "",
         quantity: "",
     })
 
+    /* Stan przechowujący liste błędów walidacji przy dodawaniu lub edycji kanału */
     const [errors, setErrors] = useState<string[]>([])
 
+    /* Stan informujący o tym czy dane są w trybie edycji */
     const [editing, setEditing] = useState(false)
 
+    /* Stan przechowujący dane potrzebne do edycji */
     const [edit, setEdit] = useState<IEdit>({
         key: undefined,
         value: undefined,
     })
 
+    /**
+     * Funkcja do usuwania rekordu z bazy danych
+     * Wykonywana jest w przypadku kliknięcia przycisku `Usuń`
+     */
     const handleDelete = async (id: number) => {
         if (!window.confirm("Czy chcesz usunąć ten element?")) return;
         try {
@@ -47,6 +61,13 @@ function DataTable({ data, handleRefresh }: IChannelList) {
         }
     }
 
+
+    /**
+     * Funkja do dodawania rekordu do bazy danych
+     * Wykonywana w przypadku kliknięcia przycisku `Dodaj`
+     * Walidacja: Jeśli dane są błędne, komunikaty o błędach są wyświetlane
+     * Po wykonaniu zapytania odświerza liste
+     */
     const handleCreate = async () => {
         try {
             const response = await fetch(`http://localhost:8000/api/add/`, {
@@ -59,7 +80,7 @@ function DataTable({ data, handleRefresh }: IChannelList) {
             })
             if (!response.ok) {
                 const errorData = await response.json()
-                const errorMessages =  errorData.errors ? Object.values(errorData.errors).flat() : [];
+                const errorMessages = errorData.errors ? Object.values(errorData.errors).flat() : [];
                 setErrors(errorMessages as string[])
             } else {
                 setErrors([])
@@ -77,6 +98,10 @@ function DataTable({ data, handleRefresh }: IChannelList) {
         }
     }
 
+    /**
+     * Funkjca do rozpoczynania edycji w kolumnie `Ilość`
+     * Wykonywana w przypadku podwójnego kliknięcia na pole z ilością
+     */
     const handleChangeElement = (key: number, value: number) => {
         setEdit({
             key: key,
@@ -85,6 +110,10 @@ function DataTable({ data, handleRefresh }: IChannelList) {
         setEditing(true)
     }
 
+    /**
+     * Funkcja do zmieniania wartości w `edit`
+     * Wykonywana, gdy użytkownik wprowadza nową wartość w polu edycji
+     */
     const handleOnChange = (e: any) => {
         setEdit({
             ...edit,
@@ -92,6 +121,11 @@ function DataTable({ data, handleRefresh }: IChannelList) {
         })
     }
 
+    /**
+     * Funcja do edycji rekordu w bazie danych
+     * Wykonywana w przypadku kliknięcia klawisza Enter podczas edycji
+     * Walidacja: Jeśli dane są błędne, komunikaty o błędach są wyświetlane
+     */
     const handleEdit = async (e: any) => {
         if (e.key !== 'Enter') { return }
 
@@ -106,7 +140,7 @@ function DataTable({ data, handleRefresh }: IChannelList) {
             })
             if (!response.ok) {
                 const errorData = await response.json()
-                const errorMessages =  errorData.errors ? Object.values(errorData.errors).flat() : [];
+                const errorMessages = errorData.errors ? Object.values(errorData.errors).flat() : [];
                 setErrors(errorMessages as string[])
             } else {
                 setErrors([])
@@ -137,21 +171,34 @@ function DataTable({ data, handleRefresh }: IChannelList) {
                         </tr>
                     </thead>
                     <tbody>
+                        {/* Wyświetlanie danych z listy kanałów */}
                         {data?.map((channel) => (
                             <tr key={channel.id as number}>
+                                {/* Wyświetlanie nazwy */}
                                 <td>{channel.name}</td>
+
+                                {/* Edycja ilości po podwójnym kliknięciu */}
                                 <td onDoubleClick={(e) => { handleChangeElement(channel.id as number, channel.quantity as number) }}>
                                     {(editing && channel.id === edit.key) ? (
-                                        <input type="number" value={edit.value} onChange={(e) => { handleOnChange(e) }} onKeyDown={(e) => { handleEdit(e) }} onMouseOut={() => { setEditing(false) }} />
+                                        <input
+                                            type="number"
+                                            value={edit.value}
+                                            onChange={(e) => { handleOnChange(e) }}
+                                            onKeyDown={(e) => { handleEdit(e) }}
+                                            onBlur={() => { setEditing(false) }} 
+                                            autoFocus={true}/>
                                     ) : (
+                                        /* Wyświetlanie ilości, gdy edycja nie jest aktywna */
                                         <>{channel.quantity}</>
                                     )}
                                 </td>
                                 <td>
+                                    {/* Przycisk do usuwania kanału */}
                                     <button className="button-remove" onClick={() => handleDelete(channel.id as number)}>Usuń</button>
                                 </td>
                             </tr>
                         ))}
+                        {/* Formularz do dodawania nowego kanału */}
                         <tr>
                             <td>
                                 <input
@@ -172,11 +219,13 @@ function DataTable({ data, handleRefresh }: IChannelList) {
                                 />
                             </td>
                             <td>
+                                {/* Przycisk do dodawania kanału */}
                                 <button type="submit" className="button-add" onClick={handleCreate}>Dodaj</button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
+                {/* Wyświetlanie błędów walidacji */}
                 <div className="error-container">
                     {errors?.map((error, index) => (
                         <p key={index}>{error}</p>
